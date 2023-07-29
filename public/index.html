@@ -9,10 +9,14 @@
   <body>
 
     <header>
-      <h2>Firebase RealTime ChatTTT</h2>
+      <h2 id="title">Firebase RealTime Chat</h2>
     </header>
 
     <div id="chat">
+      <form id="room-form">
+        Enter room: <input id="room-input" type="text">
+        <button id="join-room-btn" type="submit"> Join </button>
+      </form>
       <!-- messages will display here -->
       <ul id="messages"></ul>
 
@@ -21,6 +25,8 @@
         <input id="message-input" type="text" />
         <button id="message-btn" type="submit">Send</button>
       </form>
+
+      <button id="back-btn"> Back </button>
     </div>
 
     <!-- scripts -->
