@@ -3,18 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Firebase RealTime Chat</title>
+    <title>UniChat</title>
     <link rel="stylesheet" href="./index.css">
   </head>
   <body>
 
     <header>
-      <h2 id="title">Firebase RealTime Chat</h2>
+      <h2 id="title">UniChat</h2>
     </header>
 
     <div id="chat">
+      <div id="room-list">
+        <h3> Room List </h3>
+        <ul id="rooms"></ul>
+      </div>
       <form id="room-form">
-        Enter room: <input id="room-input" type="text">
+        Enter class: <input id="room-input" type="text" placeholder="FIT0000">
         <button id="join-room-btn" type="submit"> Join </button>
       </form>
       <!-- messages will display here -->

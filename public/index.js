@@ -29,19 +29,58 @@ roomForm.addEventListener('submit', joinRoom)
 let roomId;
 let fetchChat;
 
+function loadRoomList() {
+    const roomList = document.getElementById('rooms')
+    db.ref("units").on('child_added', snapshot => {
+        const roomButton = document.createElement('button')
+        roomButton.innerText = snapshot.key
+        roomButton.addEventListener('click', () => joinRoomByButton(snapshot.key))
+        roomList.appendChild(roomButton)
+        // const roomButtons = document.getElementsByClassName('room-btn')
+        // console.log("typeof roombutton", typeof (roomButtons))
+
+        // console.log("typeof roombutton", typeof (roomButtons[0]))
+        // console.log("roomButtons", roomButtons)
+        // for (const button of roomButtons) {
+        //     button.addEventListener('click', (event) => {
+        //         console.log(event.target.innerText);
+        //     });
+        // }
+    })
+
+}
+loadRoomList()
 
 function joinRoom(e) {
-    console.log("joinRoom")
     e.preventDefault()
     roomId = document.getElementById('room-input').value
     document.getElementById('message-form').style.display = 'block'
     document.getElementById('messages').style.display = 'block'
     document.getElementById('back-btn').style.display = 'block'
     document.getElementById('room-form').style.display = 'none'
+    document.getElementById('room-list').style.display = 'none'
+    document.getElementById('title').innerText = roomId
+    fetchChat = db.ref("units/" + roomId + "/")
+    fetchChat.on("child_added", function (snapshot) {
+        const messages = snapshot.val();
+        const message = `<li class=${username === messages.username ? "sent" : "receive"
+            }><span>${messages.username}: </span>${messages.message}</li>`;
+        // append the message on the page
+        document.getElementById("messages").innerHTML += message;
+    });
+}
+
+function joinRoomByButton(roomId) {
+    console.log("join room", roomId)
+    document.getElementById('message-form').style.display = 'block'
+    document.getElementById('messages').style.display = 'block'
+    document.getElementById('back-btn').style.display = 'block'
+    document.getElementById('room-form').style.display = 'none'
+    document.getElementById('room-list').style.display = 'none'
     document.getElementById('title').innerText = roomId
     document.getElementById("messages").innerHTML +=
-        `<li> Welcome ${username} </li>`;   
-    fetchChat = db.ref(roomId + "/")
+        `<li> Welcome ${username} </li>`;
+    fetchChat = db.ref("units/" + roomId + "/")
     fetchChat.on("child_added", function (snapshot) {
         const messages = snapshot.val();
         const message = `<li class=${username === messages.username ? "sent" : "receive"
@@ -61,7 +100,9 @@ function backClicked() {
     document.getElementById('messages').style.display = 'none'
     document.getElementById('back-btn').style.display = 'none'
     document.getElementById('room-form').style.display = 'block'
-    document.getElementById('title').innerText = 'Firebase RealTime Chat'
+    document.getElementById('title').innerText = 'UniChat'
+    document.getElementById('room-list').style.display = 'block'
+    document.getElementById('messages').innerHTML = ""
 }
 
 const messageForm = document.getElementById('message-form')
@@ -84,7 +125,7 @@ function sendMessage(e) {
         .scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
 
     // create db collection and send in the data
-    db.ref(roomId + "/" + timestamp).set({
+    db.ref("units/" + roomId + "/" + timestamp).set({
         username,
         message,
     });
