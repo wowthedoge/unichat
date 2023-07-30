@@ -12,16 +12,67 @@ const firebaseConfig = {
     appId: "1:291619298133:web:8d488a239dabad789c6ddc",
     measurementId: "G-DXZSHXMQ1C"
 };
-
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
+
+let provider = new firebase.auth.GoogleAuthProvider();
+let username
+firebase.auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+        console.log("logged in")
+        //let credential = result.credential;  
+
+        // // This gives you a Google Access Token. You can use it to access the Google API.
+        // let token = credential.accessToken;
+        // // The signed-in user info.
+        // let user = result.user;
+        // // IdP data available in result.additionalUserInfo.profile.
+        // console.log("token, user", token, user)
+
+
+
+        //Access the current signed-in user
+        const user = firebase.auth().currentUser;
+
+        if (user) {
+            // User is signed in, you can access the user details
+            const displayName = user.displayName; // User's display name
+            const email = user.email; // User's email address
+            const photoURL = user.photoURL; // User's profile photo URL
+            const uid = user.uid; // User's unique ID
+
+            console.log("Display Name:", displayName);
+            console.log("Email:", email);
+            console.log("Profile Photo URL:", photoURL);
+            console.log("User UID:", uid);
+
+            username = displayName
+            const usernameDisplay = document.getElementById('username')
+            usernameDisplay.style.display = 'block'
+            usernameDisplay.innerText = 'Welcome, ' + username
+        } else {
+            // User is not signed in, or there was an error during sign-in
+            console.log("User is not signed in.");
+        }
+
+    }).catch((error) => {
+        // Handle Errors here.  
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+        console.log(error)
+    });
 
 
 // Initialize Realtime Database and get a reference to the service
 const db = firebase.database();
 
-const username = prompt("Your username: ");
 
 const roomForm = document.getElementById('room-form')
 roomForm.addEventListener('submit', joinRoom)
