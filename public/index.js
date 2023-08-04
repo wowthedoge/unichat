@@ -87,16 +87,6 @@ function loadRoomList() {
         roomButton.innerText = snapshot.key
         roomButton.addEventListener('click', () => joinRoomByButton(snapshot.key))
         roomList.appendChild(roomButton)
-        // const roomButtons = document.getElementsByClassName('room-btn')
-        // console.log("typeof roombutton", typeof (roomButtons))
-
-        // console.log("typeof roombutton", typeof (roomButtons[0]))
-        // console.log("roomButtons", roomButtons)
-        // for (const button of roomButtons) {
-        //     button.addEventListener('click', (event) => {
-        //         console.log(event.target.innerText);
-        //     });
-        // }
     })
 
 }
@@ -121,16 +111,15 @@ function joinRoom(e) {
     });
 }
 
-function joinRoomByButton(roomId) {
-    console.log("join room", roomId)
+function joinRoomByButton(id) {
+    console.log("join room", id)
+    roomId = id
     document.getElementById('message-form').style.display = 'block'
     document.getElementById('messages').style.display = 'block'
     document.getElementById('back-btn').style.display = 'block'
     document.getElementById('room-form').style.display = 'none'
     document.getElementById('room-list').style.display = 'none'
     document.getElementById('title').innerText = roomId
-    document.getElementById("messages").innerHTML +=
-        `<li> Welcome ${username} </li>`;
     fetchChat = db.ref("units/" + roomId + "/")
     fetchChat.on("child_added", function (snapshot) {
         const messages = snapshot.val();
@@ -157,9 +146,12 @@ function backClicked() {
 }
 
 const messageForm = document.getElementById('message-form')
+console.log("messageForm", messageForm)
 messageForm.addEventListener('submit', sendMessage)
 
 function sendMessage(e) {
+    console.log("sendMessage wiht username, roomId: ", username, roomId)
+
     e.preventDefault();
 
     // get values to be submitted
@@ -179,7 +171,7 @@ function sendMessage(e) {
     db.ref("units/" + roomId + "/" + timestamp).set({
         username,
         message,
-    });
+    }).catch(err => console.log(err));
 }
 
 
